@@ -543,13 +543,13 @@ class ProductProduct(models.Model):
                 'move_type': 'entry',
             })
             vacuum_pairs_to_reconcile.append((vacuum_svl, svl_to_vacuum))
-        new_account_moves = AccountMove.create(account_move_vals)
-        new_account_moves._post()
-        for new_account_move, (vacuum_svl, svl_to_vacuum) in zip(new_account_moves, vacuum_pairs_to_reconcile):
-            account = svls_accounts[svl_to_vacuum.id]['stock_output']
-            to_reconcile_account_move_lines = vacuum_svl.account_move_id.line_ids.filtered(lambda l: not l.reconciled and l.account_id == account and l.account_id.reconcile)
-            to_reconcile_account_move_lines += new_account_move.line_ids.filtered(lambda l: not l.reconciled and l.account_id == account and l.account_id.reconcile)
-            to_reconcile_account_move_lines.reconcile()
+            new_account_moves = AccountMove.create(account_move_vals)
+            new_account_moves._post()
+            for new_account_move, (vacuum_svl, svl_to_vacuum) in zip(new_account_moves, vacuum_pairs_to_reconcile):
+                account = svls_accounts[svl_to_vacuum.id]['stock_output']
+                to_reconcile_account_move_lines = vacuum_svl.account_move_id.line_ids.filtered(lambda l: not l.reconciled and l.account_id == account and l.account_id.reconcile)
+                to_reconcile_account_move_lines += new_account_move.line_ids.filtered(lambda l: not l.reconciled and l.account_id == account and l.account_id.reconcile)
+                to_reconcile_account_move_lines.reconcile()
 
     # TODO remove in master
     def _create_fifo_vacuum_anglo_saxon_expense_entry(self, vacuum_svl, svl_to_vacuum):
